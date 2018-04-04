@@ -3,74 +3,43 @@ import {
   Text,
   View,
   StyleSheet,
-  ActivityIndicator,
-  StatusBar
+  Dimensions
 } from "react-native"
+
+import ScrollContent from '../scroll_content'
+import SwiperHome from './swiper'
 
 export default class Home extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      list: [],
-      currentIndex: 0
+      scrollHeight: 0
     }
   }
-
   componentWillMount() {
-    fetch('http://localhost:8882/rest/mash')
-      .then(res => res.json())
-      .then(res => this.setState({ list: res }));
+    const { height } = Dimensions.get('window')
+    this.setState({
+      scrollHeight: height - 66 - 44
+    })
   }
 
   render() {
-    let contents;
-    if (!this.state.list.length) {
-      contents = (
-        <View style={ styles.loading }>
-          <Text style={ styles.loadingText }>Loading</Text>
-          <ActivityIndicator />
+    return (
+      <View>
+        <View style={ styles.header }>
+          <Text style={ styles.headerText }>
+            首页
+          </Text>
         </View>
-      )
-    } else {
-      contents = (
-        <View style={ styles.content }>
-          <Text>Loaded</Text>
-        </View>
-      )
-    }
-
-  return (
-    <View style={ styles.container }>
-      <StatusBar
-        backgroundColor="blue"
-        barStyle="light-content"
-      />
-      <View style={ styles.header }>
-        <Text style={ styles.headerText }>
-          首页
-        </Text>
+        <ScrollContent height = {this.state.scrollHeight}>
+          <SwiperHome />
+        </ScrollContent>
       </View>
-      {contents}
-    </View>
-    )
+      )
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff"
-  },
-  loading: {
-    flex: 1,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  loadingText: {
-    fontSize: 14,
-    marginBottom: 20
-  },
   header: {
     height: 50,
     backgroundColor: '#760004',
